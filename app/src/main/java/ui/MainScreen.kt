@@ -15,10 +15,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.food_project.model.Recipe
+import androidx.navigation.NavController
 import com.example.food_project.viewmodel.MainViewModel
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(viewModel: MainViewModel, navController: NavController) {
     if (viewModel.errorMessage != null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = viewModel.errorMessage ?: "Unknown error", color = MaterialTheme.colorScheme.error)
@@ -29,19 +30,21 @@ fun MainScreen(viewModel: MainViewModel) {
             contentPadding = PaddingValues(16.dp)
         ) {
             items(viewModel.recipes) { recipe ->
-                RecipeCard(recipe)
+                RecipeCard(recipe = recipe, onClick = {
+                    navController.navigate("recipe/${recipe.pk}")
+                })
             }
         }
     }
 }
 
 @Composable
-fun RecipeCard(recipe: Recipe) {
+fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { /* TODO: Navigate to detail screen */ },
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -53,7 +56,7 @@ fun RecipeCard(recipe: Recipe) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(16f / 9f) // Ensures uniform image size
+                    .aspectRatio(16f / 9f)
             ) {
                 val image: Painter = rememberAsyncImagePainter(recipe.featuredImage)
                 Image(
@@ -64,7 +67,6 @@ fun RecipeCard(recipe: Recipe) {
                 )
             }
 
-            // Title & Publisher Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
