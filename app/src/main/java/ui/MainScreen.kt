@@ -16,11 +16,7 @@ import com.example.food_project.model.Recipe
 import com.example.food_project.viewmodel.MainViewModel
 
 @Composable
-fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
-    LaunchedEffect(Unit) {
-        viewModel.fetchRecipes() // Load recipes when screen opens
-    }
-
+fun MainScreen(viewModel: MainViewModel) {
     if (viewModel.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
