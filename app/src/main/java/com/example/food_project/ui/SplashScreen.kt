@@ -28,8 +28,6 @@ fun SplashScreen() {
                     .fillMaxWidth(0.5f)
                     .aspectRatio(1f)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            CircularProgressIndicator()
         }
     }
 }

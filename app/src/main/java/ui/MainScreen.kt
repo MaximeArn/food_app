@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.food_project.model.Recipe
@@ -17,11 +19,7 @@ import com.example.food_project.viewmodel.MainViewModel
 
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
-    if (viewModel.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else if (viewModel.errorMessage != null) {
+    if (viewModel.errorMessage != null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = viewModel.errorMessage ?: "Unknown error", color = MaterialTheme.colorScheme.error)
         }
@@ -44,20 +42,50 @@ fun RecipeCard(recipe: Recipe) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable { /* TODO: Navigate to detail screen */ },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val image: Painter = rememberAsyncImagePainter(recipe.featured_image)
-            Image(painter = image, contentDescription = recipe.title, modifier = Modifier.size(80.dp))
+            // Image Box
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f) // Ensures uniform image size
+            ) {
+                val image: Painter = rememberAsyncImagePainter(recipe.featuredImage)
+                Image(
+                    painter = image,
+                    contentDescription = recipe.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            // Title & Publisher Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = recipe.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp)
+                )
 
-            Column {
-                Text(text = recipe.title, style = MaterialTheme.typography.titleMedium)
-                Text(text = "Rating: ${recipe.rating}/10", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "By ${recipe.publisher}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
