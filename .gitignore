@@ -1,15 +1,45 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+*.iml# 📂 Dossiers et fichiers générés par Android Studio
+     .idea/
+     .local/
+     *.iml
+     /.cxx/
+     .externalNativeBuild/
+     .cxx/
+     local.properties
+     captures/
+
+     # 📂 Dossiers de build (compilation)
+     **/build/
+     **/out/
+     **/generated/
+
+     # 📂 Cache de dépendances (inutile dans le repo)
+     .gradle/
+     gradle-app.setting
+     gradle-wrapper.jar
+     gradle/wrapper/gradle-wrapper.properties
+
+     # 📂 Fichiers système spécifiques au Mac
+     .DS_Store
+
+     # 📂 Dossiers spécifiques à Android
+     app/release/
+     app/debug/
+
+     # 📂 Clés API et fichiers de configuration locaux
+     *.keystore
+     *.jks
+     key.properties
+     google-services.json
+
+     # 📂 Fichiers logs et de debuggage
+     *.log
+     /logs/
+     logcat.txt
+
+     # 📂 Fichiers de tests unitaires générés
+     /test-output/
+     androidTest-results/
+
+     # 📂 Exclusions pour Jetpack Compose Preview
+     .compose-cache/
