@@ -1,36 +1,39 @@
-package com.example.food_prpackage com.example.food_project
+package com.example.food_project
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import com.example.food_project.ui.theme.Food_projectTheme
 import kotlinx.coroutines.delay
+import com.example.food_project.ui.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var showSplash by remember { mutableStateOf(true) }
+            Food_projectTheme {
+                var showSplash by remember { mutableStateOf(true) }
 
-            LaunchedEffect(Unit) {
-                delay(3000) // Afficher le splash screen pendant 3 secondes
-                showSplash = false
+                LaunchedEffect(Unit) {
+                    delay(3000)
+                    showSplash = false
+                }
+
+                if (showSplash) {
+                    SplashScreen(
+                    )
+                } else {
+                    MainScreen()
+                }
             }
 
-            if (showSplash) {
-                SplashScreen()
-            } else {
-                MainScreen() // Écran principal des recettes (on le créera plus tard)
-            }
         }
     }
 }
@@ -39,7 +42,6 @@ class MainActivity : ComponentActivity() {
 fun SplashScreen() {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.primary
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -47,11 +49,17 @@ fun SplashScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo), // Ajoute ton logo dans res/drawable
-                contentDescription = "Logo"
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .aspectRatio(1f)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Chargement des recettes...", color = MaterialTheme.colorScheme.onPrimary)
+            Text(
+                text = "Loading recipes...",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.headlineMedium
+                )
         }
     }
 }
