@@ -1,6 +1,5 @@
 package com.example.food_project.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food_project.api.RetrofitInstance
@@ -21,6 +20,10 @@ class MainViewModel : ViewModel() {
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
+    private var currentPage = 1
+    var isFetchingMore by mutableStateOf(false)
+        private set
+
     init {
         fetchRecipes()
     }
@@ -30,14 +33,14 @@ class MainViewModel : ViewModel() {
             isLoading = true
             try {
                 val response = RetrofitInstance.api.getRecipes(
-                    authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48"
+                    authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
+                    page = currentPage
                 )
                 if (response.results.isNotEmpty()) {
                     recipes = response.results
                 } else {
                     errorMessage = "No recipes found"
                 }
-
             } catch (e: Exception) {
                 errorMessage = "Error fetching data: ${e.message}"
             } finally {
@@ -45,4 +48,27 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+    fun loadMoreRecipes() {
+        if (isFetchingMore) return
+
+        viewModelScope.launch {
+            isFetchingMore = true
+            try {
+                val response = RetrofitInstance.api.getRecipes(
+                    authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
+                    page = currentPage + 1
+                )
+                if (response.results.isNotEmpty()) {
+                    recipes = recipes + response.results
+                    currentPage++
+                }
+            } catch (e: Exception) {
+                errorMessage = "Error fetching more data: ${e.message}"
+            } finally {
+                isFetchingMore = false
+            }
+        }
+    }
 }
+

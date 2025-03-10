@@ -3,7 +3,7 @@ package com.example.food_project.ui
 import RecipeCard
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,13 +23,29 @@ fun MainScreen(viewModel: MainViewModel, navController: NavController) {
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp)
         ) {
-            items(viewModel.recipes) { recipe ->
+            itemsIndexed(viewModel.recipes) { index, recipe ->
                 RecipeCard(recipe = recipe, onClick = {
                     navController.navigate("recipe/${recipe.pk}")
                 })
+
+                if (index == viewModel.recipes.size - 1) {
+                    LaunchedEffect(Unit) {
+                        viewModel.loadMoreRecipes()
+                    }
+                }
+            }
+
+            if (viewModel.isFetchingMore) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }
 }
-
 
