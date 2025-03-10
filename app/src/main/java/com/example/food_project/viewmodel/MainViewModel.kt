@@ -1,6 +1,5 @@
 package com.example.food_project.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food_project.api.RetrofitInstance

@@ -1,4 +1,4 @@
-package com.example.food_project.ui
+package com.example.food_project.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

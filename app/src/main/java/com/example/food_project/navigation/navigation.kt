@@ -1,13 +1,12 @@
 package com.example.food_project.navigation
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.food_project.ui.MainScreen
-import com.example.food_project.ui.RecipeDetailsScreen
-import com.example.food_project.ui.SplashScreen
+import com.example.food_project.ui.screens.MainScreen
+import com.example.food_project.ui.screens.RecipeDetailsScreen
+import com.example.food_project.ui.screens.SplashScreen
 import com.example.food_project.viewmodel.MainViewModel
 
 @Composable
