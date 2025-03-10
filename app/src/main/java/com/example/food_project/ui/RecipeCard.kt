@@ -34,7 +34,6 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Image Box
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

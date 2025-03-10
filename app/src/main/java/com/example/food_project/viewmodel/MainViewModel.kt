@@ -1,5 +1,6 @@
 package com.example.food_project.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food_project.api.RetrofitInstance
@@ -22,6 +23,9 @@ class MainViewModel : ViewModel() {
 
     private var currentPage = 1
     var isFetchingMore by mutableStateOf(false)
+        private set
+
+    var selectedRecipe by mutableStateOf<Recipe?>(null)
         private set
 
     init {
@@ -70,5 +74,27 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+    fun fetchRecipeDetails(recipeId: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            selectedRecipe = null
+            try {
+
+                val recipe = RetrofitInstance.api.getRecipeDetails(
+                    authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
+                    id = recipeId
+                )
+
+                selectedRecipe = recipe
+            } catch (e: Exception) {
+                errorMessage = "Error fetching recipe details: ${e.message}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+
 }
 

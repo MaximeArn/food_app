@@ -11,6 +11,12 @@ interface RecipeApiService {
         @Query("query") query: String = "",
         @Query("page") page: Int = 1
     ): RecipeResponse
+
+    @GET("recipe/get/")
+    suspend fun getRecipeDetails(
+        @Header("Authorization") authToken: String,
+        @Query("id") id: Int
+    ): Recipe
 }
 
 data class RecipeResponse(
