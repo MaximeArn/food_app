@@ -11,16 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.food_project.viewmodel.MainViewModel
+import com.example.food_project.ui.components.SearchBar
 
 @Composable
 fun MainScreen(viewModel: MainViewModel, navController: NavController) {
-    var searchQuery by remember { mutableStateOf("") }
-
     Column(modifier = Modifier.fillMaxSize()) {
-        // Search bar at the top
-        com.example.food_project.ui.components.SearchBar(
-            query = searchQuery,
-            onQueryChanged = { searchQuery = it })
+        SearchBar(
+            query = viewModel.searchQuery,
+            onQueryChanged = { query -> viewModel.searchRecipes(query) }
+        )
 
         if (viewModel.errorMessage != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -36,7 +35,7 @@ fun MainScreen(viewModel: MainViewModel, navController: NavController) {
                         navController.navigate("recipe/${recipe.pk}")
                     })
 
-                    if (index == viewModel.recipes.size - 1) {
+                    if (index == viewModel.recipes.size - 1 && !viewModel.isFetchingMore) {
                         LaunchedEffect(Unit) {
                             viewModel.loadMoreRecipes()
                         }

@@ -8,13 +8,14 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import android.util.Log
 
 class MainViewModel : ViewModel() {
 
-    var recipes by mutableStateOf<List<Recipe>>(emptyList())
+    var recipes by mutableStateOf<List<Recipe>>(emptyList()) // Single list for everything
         private set
 
-    var isLoading by mutableStateOf(true)
+    var isLoading by mutableStateOf(false)
         private set
 
     var errorMessage by mutableStateOf<String?>(null)
@@ -27,25 +28,36 @@ class MainViewModel : ViewModel() {
     var selectedRecipe by mutableStateOf<Recipe?>(null)
         private set
 
+    var searchQuery by mutableStateOf("") // Store search query
+
     init {
         fetchRecipes()
     }
 
-    fun fetchRecipes() {
+    fun fetchRecipes(query: String = "", isNewSearch: Boolean = false) {
         viewModelScope.launch {
+            if (isNewSearch) {
+                currentPage = 1
+                recipes = emptyList()
+            }
+
             isLoading = true
+            errorMessage = null
             try {
                 val response = RetrofitInstance.api.getRecipes(
                     authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
+                    query = query,
                     page = currentPage
                 )
+
                 if (response.results.isNotEmpty()) {
-                    recipes = response.results
-                } else {
+                    recipes = if (isNewSearch) response.results else recipes + response.results
+                } else if (isNewSearch) {
                     errorMessage = "No recipes found"
                 }
             } catch (e: Exception) {
                 errorMessage = "Error fetching data: ${e.message}"
+                Log.e("API Error", "Error: ${e.message}")
             } finally {
                 isLoading = false
             }
@@ -53,18 +65,19 @@ class MainViewModel : ViewModel() {
     }
 
     fun loadMoreRecipes() {
-        if (isFetchingMore) return
+        if (isFetchingMore) return // Prevent multiple requests
 
         viewModelScope.launch {
             isFetchingMore = true
             try {
+                currentPage++ // Move to next page
                 val response = RetrofitInstance.api.getRecipes(
                     authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
-                    page = currentPage + 1
+                    query = searchQuery, // Use search query if available
+                    page = currentPage
                 )
                 if (response.results.isNotEmpty()) {
-                    recipes = recipes + response.results
-                    currentPage++
+                    recipes = recipes + response.results // Append new results
                 }
             } catch (e: Exception) {
                 errorMessage = "Error fetching more data: ${e.message}"
@@ -79,12 +92,10 @@ class MainViewModel : ViewModel() {
             isLoading = true
             selectedRecipe = null
             try {
-
                 val recipe = RetrofitInstance.api.getRecipeDetails(
                     authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
                     id = recipeId
                 )
-
                 selectedRecipe = recipe
             } catch (e: Exception) {
                 errorMessage = "Error fetching recipe details: ${e.message}"
@@ -94,6 +105,9 @@ class MainViewModel : ViewModel() {
         }
     }
 
-
+    fun searchRecipes(query: String) {
+        searchQuery = query
+        fetchRecipes(query, isNewSearch = true)
+    }
 }
 
