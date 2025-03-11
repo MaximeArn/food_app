@@ -12,7 +12,7 @@ import android.util.Log
 
 class MainViewModel : ViewModel() {
 
-    var recipes by mutableStateOf<List<Recipe>>(emptyList()) // Single list for everything
+    var recipes by mutableStateOf<List<Recipe>>(emptyList())
         private set
 
     var isLoading by mutableStateOf(false)
@@ -28,7 +28,7 @@ class MainViewModel : ViewModel() {
     var selectedRecipe by mutableStateOf<Recipe?>(null)
         private set
 
-    var searchQuery by mutableStateOf("") // Store search query
+    var searchQuery by mutableStateOf("")
 
     init {
         fetchRecipes()
@@ -65,19 +65,19 @@ class MainViewModel : ViewModel() {
     }
 
     fun loadMoreRecipes() {
-        if (isFetchingMore) return // Prevent multiple requests
+        if (isFetchingMore) return
 
         viewModelScope.launch {
             isFetchingMore = true
             try {
-                currentPage++ // Move to next page
+                currentPage++
                 val response = RetrofitInstance.api.getRecipes(
                     authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
-                    query = searchQuery, // Use search query if available
+                    query = searchQuery,
                     page = currentPage
                 )
                 if (response.results.isNotEmpty()) {
-                    recipes = recipes + response.results // Append new results
+                    recipes = recipes + response.results
                 }
             } catch (e: Exception) {
                 errorMessage = "Error fetching more data: ${e.message}"
@@ -109,5 +109,10 @@ class MainViewModel : ViewModel() {
         searchQuery = query
         fetchRecipes(query, isNewSearch = true)
     }
+
+    fun selectCategory(category: String) {
+        searchRecipes(category)
+    }
 }
+
 

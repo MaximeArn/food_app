@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.food_project.viewmodel.MainViewModel
 import com.example.food_project.ui.components.SearchBar
+import com.example.food_project.ui.components.CategoryFilter
 
 @Composable
 fun MainScreen(viewModel: MainViewModel, navController: NavController) {
@@ -20,6 +21,12 @@ fun MainScreen(viewModel: MainViewModel, navController: NavController) {
             query = viewModel.searchQuery,
             onQueryChanged = { query -> viewModel.searchRecipes(query) }
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        CategoryFilter(viewModel)
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (viewModel.errorMessage != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
